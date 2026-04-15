@@ -56,7 +56,7 @@ namespace HotelAPI.Controllers
                 Name = "Stary Magazyn", 
                 BuildingCode = 102, 
                 Floor = -1, 
-                Capacity = 0, 
+                Capacity = 1, 
                 HasProjector = false, 
                 IsActive = false 
             }
