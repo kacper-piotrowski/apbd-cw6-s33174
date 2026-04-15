@@ -8,7 +8,7 @@ namespace HotelAPI.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private static readonly List<Room> _roomList = new List<Room>()
+        public readonly static List<Room> RoomList = new List<Room>()
         {
             new Room 
             { 
@@ -66,7 +66,7 @@ namespace HotelAPI.Controllers
         public IActionResult GetByParams([FromQuery] int? minCapacity, [FromQuery] bool? hasProjector, [FromQuery] bool? activeOnly)
         {
             var accurateRooms = new List<Room>();
-            foreach (var room in _roomList)
+            foreach (var room in RoomList)
             {
                 if (
                     (minCapacity == null || room.Capacity >= minCapacity)
@@ -87,7 +87,7 @@ namespace HotelAPI.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetById([FromRoute] int id)
         {
-            var roomFound = _roomList.FirstOrDefault(x => x.Id == id);
+            var roomFound = RoomList.FirstOrDefault(x => x.Id == id);
             if (roomFound == null)
             {
                 return NotFound();
@@ -99,7 +99,7 @@ namespace HotelAPI.Controllers
         public IActionResult GetByBuildingCode([FromRoute] int buildingCode)
         {
             var buildingCodeRooms = new List<Room>();
-            foreach (var room in _roomList)
+            foreach (var room in RoomList)
             {
                 if (room.BuildingCode == buildingCode)
                 {
@@ -118,7 +118,7 @@ namespace HotelAPI.Controllers
         {
             var createdRoom = new Room()
             {
-                Id = _roomList.Max(x => x.Id) + 1,
+                Id = RoomList.Max(x => x.Id) + 1,
                 Name = room.Name,
                 BuildingCode = room.BuildingCode,
                 Floor = room.Floor,
@@ -126,7 +126,7 @@ namespace HotelAPI.Controllers
                 HasProjector = room.HasProjector,
                 IsActive = room.IsActive
             };
-            _roomList.Add(createdRoom);
+            RoomList.Add(createdRoom);
             return CreatedAtAction(
                 nameof(GetById),new {id = createdRoom.Id},createdRoom);
         }
@@ -145,13 +145,13 @@ namespace HotelAPI.Controllers
                 IsActive = room.IsActive
             };
             
-            var roomFound = _roomList.FirstOrDefault(x => x.Id == id);
+            var roomFound = RoomList.FirstOrDefault(x => x.Id == id);
             if (roomFound == null)
             {
                 return NotFound();
             }
-            var index = _roomList.IndexOf(roomFound);
-            _roomList[index] = updatedRoom;
+            var index = RoomList.IndexOf(roomFound);
+            RoomList[index] = updatedRoom;
             return Ok(updatedRoom);
 
         }
@@ -159,12 +159,12 @@ namespace HotelAPI.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteRoom([FromRoute] int id)
         {
-            var roomFound = _roomList.FirstOrDefault(x => x.Id == id);
+            var roomFound = RoomList.FirstOrDefault(x => x.Id == id);
             if (roomFound == null)
             {
                 return NotFound();
             }
-            _roomList.Remove(roomFound);
+            RoomList.Remove(roomFound);
             return NoContent();
         }
 
