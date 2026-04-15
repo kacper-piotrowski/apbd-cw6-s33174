@@ -160,6 +160,44 @@ namespace HotelAPI.Controllers
             {
                 return BadRequest();
             }
+            
+            var roomFound = RoomsController.RoomList.FirstOrDefault(x => x.Id == reservation.RoomId);
+            if (roomFound == null)
+            {
+                return NotFound();
+            }
+
+            if (!roomFound.IsActive)
+            {
+                return BadRequest();
+            }
+            
+            var reservationFound = ReservationList.FirstOrDefault(x => x.Id == id);
+            if (reservationFound == null)
+            {
+                return NotFound();
+            }
+            
+            List<Reservation> reservationConflicts = new List<Reservation>();
+
+            foreach (Reservation res in ReservationList)
+            {
+                if (reservation.RoomId == res.RoomId && reservation.Date == res.Date)
+                {
+                    reservationConflicts.Add(res);
+                }
+            }
+
+            foreach (var conflict in reservationConflicts)
+            {
+                if (conflict.Id != id && reservation.RoomId == conflict.RoomId && reservation.Date == conflict.Date)
+                {
+                    if (conflict.StartTime < reservation.EndTime && reservation.StartTime < conflict.EndTime)
+                    {
+                        return Conflict();
+                    }
+                }
+            }
 
             var updateReservation = new Reservation()
             {
@@ -173,11 +211,6 @@ namespace HotelAPI.Controllers
                 Status = reservation.Status
             };
             
-            var reservationFound = ReservationList.FirstOrDefault(x => x.Id == id);
-            if (reservationFound == null)
-            {
-                return NotFound();
-            }
             var index = ReservationList.IndexOf(reservationFound);
             ReservationList[index] = updateReservation;
             return Ok(updateReservation);
