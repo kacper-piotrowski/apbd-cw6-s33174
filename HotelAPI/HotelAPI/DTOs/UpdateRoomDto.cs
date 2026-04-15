@@ -8,7 +8,7 @@ public class UpdateRoomDto
     public string Name { get; set; } = string.Empty;
     [Required, Range(1, int.MaxValue)]
     public int BuildingCode {get; set;}
-    [Required, Range(1, int.MaxValue)]
+    [Required, Range(-10, int.MaxValue)]
     public int Floor { get; set; }
     [Range(1, int.MaxValue)]
     public int Capacity { get; set; }
