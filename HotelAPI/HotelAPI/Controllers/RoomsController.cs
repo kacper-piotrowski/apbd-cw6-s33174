@@ -159,6 +159,11 @@ namespace HotelAPI.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteRoom([FromRoute] int id)
         {
+            if (ReservationsController.ReservationList.Any(x => x.RoomId == id))
+            {
+                return Conflict();
+            }
+
             var roomFound = RoomList.FirstOrDefault(x => x.Id == id);
             if (roomFound == null)
             {
